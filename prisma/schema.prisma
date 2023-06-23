@@ -15,7 +15,8 @@ model Account {
   displayName   String
   password      String
 
-  images        Post[]
+  posts        Post[]
+  comments     Comments[]
 }
 
 
@@ -59,6 +60,6 @@ model CommentHistory {
   body        String
   modifiedAt  DateTime     @default(now())
 
-  comment     Comment      @relation(fields: [commentId], references: [id])
-  commentId   Int
+  comments     Comments      @relation(fields: [commentsId], references: [id])
+  commentsId   Int
 }
