@@ -1,0 +1,26 @@
+{
+  "name": "imgur",
+  "version": "1.0.0",
+  "description": "A project made for the interview for the organizators' team in HACKTUES 2023",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mrgoblings/imgur.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mrgoblings/imgur/issues"
+  },
+  "homepage": "https://github.com/Mrgoblings/imgur#readme",
+  "devDependencies": {
+    "@types/node": "^20.3.1",
+    "prisma": "^4.16.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.3"
+  }
+}
