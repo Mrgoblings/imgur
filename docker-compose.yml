@@ -4,11 +4,11 @@ services:
     image: postgres:13
     restart: always
     environment:
-      - POSTGRES_USER=gobi
-      - POSTGRES_PASSWORD=h3_goblin_Ha
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
       - postgres:/var/lib/postgresql/data
     ports:
-      - '5432:5432'
+      - '${DB_PORT}:${DB_PORT}'
 volumes:
   postgres:

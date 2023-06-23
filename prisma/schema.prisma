@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model Account {
+  id            Int       @default(autoincrement()) @id
+  email         String    @unique
+  userName      String    @unique
+  displayName   String
+  password      String
+
+  images        Post[]
+}
+
+
+enum States {
+  DELETED
+  PRIVATE
+  UNLISTED
+  PUBLIC
+}
+
+
+model Post {
+  id        Int       @default(autoincrement()) @id
+  title     String?
+  image     Bytes
+  state     States    @default(PUBLIC)
+
+  sender    Account   @relation(fields: [senderId], references: [id])
+  senderId  Int
+
+  comments   Comments[]
+}
+
+
+model Comments{
+  id        Int       @default(autoincrement()) @id
+  body      String
+
+
+  sender    Account   @relation(fields: [senderId], references: [id])
+  senderId  Int
+
+  onPost    Post      @relation(fields: [postId], references: [id])
+  postId    Int
+
+  commentHistory CommentHistory[]
+}
+
+model CommentHistory {
+  id          Int          @default(autoincrement()) @id
+  body        String
+  modifiedAt  DateTime     @default(now())
+
+  comment     Comment      @relation(fields: [commentId], references: [id])
+  commentId   Int
+}
