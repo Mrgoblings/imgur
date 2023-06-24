@@ -15,6 +15,11 @@ model Account {
   displayName   String
   password      String
 
+  createdAt  DateTime     @default(now())
+
+  uniqeHash     String    @unique
+  ipsSeen      String      
+
   posts        Post[]
   comments     Comments[]
 }
@@ -34,6 +39,8 @@ model Post {
   image     Bytes
   state     States    @default(PUBLIC)
 
+  createdAt  DateTime     @default(now())
+
   sender    Account   @relation(fields: [senderId], references: [id])
   senderId  Int
 
@@ -45,6 +52,7 @@ model Comments{
   id        Int       @default(autoincrement()) @id
   body      String
 
+  createdAt  DateTime     @default(now())
 
   sender    Account   @relation(fields: [senderId], references: [id])
   senderId  Int
