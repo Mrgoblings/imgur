@@ -9,19 +9,21 @@ datasource db {
 
 
 model Account {
-  id            Int       @default(autoincrement()) @id
-  email         String    @unique
-  userName      String    @unique
-  displayName   String
-  password      String
+  id              Int          @default(autoincrement())    @id
+  isActive           
+  email           String       @unique
+  userName        String       @unique
+  displayName     String
+  password        String
 
-  createdAt  DateTime     @default(now())
+  createdAt       DateTime     @default(now())
 
-  uniqeHash     String    @unique
-  ipsSeen      String      
+  resetHash       String       @unique
+  ipsSeen         IpSeen[]
+  permissionLevel Int
 
-  posts        Post[]
-  comments     Comments[]
+  posts           Post[]
+  comments        Comments[]
 }
 
 
@@ -34,40 +36,47 @@ enum States {
 
 
 model Post {
-  id        Int       @default(autoincrement()) @id
-  title     String?
-  image     Bytes
-  state     States    @default(PUBLIC)
+  id         Int       @default(autoincrement()) @id
+  title      String?
+  image      Bytes
+  state      States    @default(PUBLIC)
 
   createdAt  DateTime     @default(now())
 
-  sender    Account   @relation(fields: [senderId], references: [id])
-  senderId  Int
+  sender     Account   @relation(fields: [senderId], references: [id])
+  senderId   Int
 
   comments   Comments[]
 }
 
 
 model Comments{
-  id        Int       @default(autoincrement()) @id
-  body      String
+  id         Int       @default(autoincrement()) @id
+  body       String
 
-  createdAt  DateTime     @default(now())
+  createdAt  DateTime  @default(now())
 
-  sender    Account   @relation(fields: [senderId], references: [id])
-  senderId  Int
+  sender     Account   @relation(fields: [senderId], references: [id])
+  senderId   Int
 
-  onPost    Post      @relation(fields: [postId], references: [id])
-  postId    Int
+  onPost     Post      @relation(fields: [postId], references: [id])
+  postId     Int
 
   commentHistory CommentHistory[]
 }
 
 model CommentHistory {
-  id          Int          @default(autoincrement()) @id
+  id          Int           @default(autoincrement()) @id
   body        String
-  modifiedAt  DateTime     @default(now())
+  modifiedAt  DateTime      @default(now())
 
-  comments     Comments      @relation(fields: [commentsId], references: [id])
-  commentsId   Int
+  comments    Comments      @relation(fields: [commentsId], references: [id])
+  commentsId  Int
+}
+
+model IpSeen {
+  id          Int      @default(autoincrement()) @id
+  ip          String
+  account     Account  @relation(fields: [accountId], references: [id])
+  accountId   Int
 }
