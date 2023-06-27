@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 import { PrismaClient } from '@prisma/client'
 import { States } from "@prisma/client";
 import express from "express"
@@ -58,6 +60,7 @@ app.post('/signin', async (req, res) => {
                 userName,
                 displayName,
                 password,
+
                 resetHash: tokenf.generateSecretKey(), // Generate a unique hash value
                 ipsSeen: [ipAddress], // Set it to an initial value
                 permissionLevel: 1
