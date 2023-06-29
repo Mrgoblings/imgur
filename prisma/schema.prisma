@@ -10,15 +10,15 @@ datasource db {
 
 model Account {
   id              Int          @default(autoincrement())    @id
-  isActive           
+  isActive        Int          @default(0)   
   email           String       @unique
-  userName        String       @unique
+  username        String       @unique
   displayName     String
   password        String
 
   createdAt       DateTime     @default(now())
 
-  resetHash       String       @unique
+  refreshToken    String       @unique
   ipsSeen         IpSeen[]
   permissionLevel Int
 
@@ -38,7 +38,7 @@ enum States {
 model Post {
   id         Int       @default(autoincrement()) @id
   title      String?
-  image      Bytes
+  imageUrl   String
   state      States    @default(PUBLIC)
 
   createdAt  DateTime     @default(now())

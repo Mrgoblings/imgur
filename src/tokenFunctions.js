@@ -20,15 +20,15 @@ class Token {
     return crypto.randomBytes(32).toString('hex');
   }
 
-  async sendConfirmationMail(subject="", link="") {
+  async sendConfirmationMail(link="") {
 
     const info = await this.transporter.sendMail({
       from: `no-reply@imgur.coderr.tech`, 
       to: "mrgoblings@gmail.com", 
-      subject: subject, 
+      subject: "Confirm mail for fake imgur here!", 
       html: `<b>Confirmation link : </b> <a href = ${link}>Confirm mail!</a><br>`, 
     });
-    console.log(info.messageId);
+    // console.log(info.messageId);
   }
 }
 
