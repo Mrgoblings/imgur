@@ -30,7 +30,7 @@ app.post('/login', async (req, res) => {
         });
     }
 
-    let account; //// = {id: 7, username: "pesho", password: "$2b$10$owKQraOqeJlgJy/R2vWK2OosVl2WodwtqgQBKtb2M/ZA3gKOiunbm"};
+    let account;
     
 
     if (email) {
@@ -124,7 +124,45 @@ app.delete('/logout', async (req, res) => {
 
 
 
-//*5 signup
+app.post('/resetPassword', async (req, res) => {
+    const { email, username } = req.body;
+
+    if (!email && !username) {
+        return res.status(400).json({
+          success: false,
+          error: 'Email or username is required.',
+        });
+    }
+
+    let account;
+
+    if (email) {
+        account = await prisma.account.findFirst({
+            where: { email },
+        });
+    } else if (username) {
+        account = await prisma.account.findFirst({
+            where: { username },
+        });
+    }
+
+    if (!account) {
+        return res.status(404).json({
+            success: false,
+            error: 'Account not found.',
+        });
+    }
+
+    //! 15 mins to confirm mail
+    const accessToken = token.generateWeb({ username: account.username }, "15m");
+    mail.sendConfirmationMail(email, `http://localhost:4000/accounts/resetPassword/${accessToken}`);
+
+    //TODO forget password stuff here. Think about it
+});
+
+
+
+//* signup
 app.post('/signup', async (req, res) => {
     const { email, username, displayName, password } = req.body;
     
