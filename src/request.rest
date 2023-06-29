@@ -6,7 +6,7 @@ Content-Type: application/json
 
 {
     "username" : "Pesho",
-    "password" : "1234",
+    "password" : "123456",
     "email": "mrgoblings@gmail.com",
     "displayName": "XXpeshoXX"
 }
@@ -26,5 +26,5 @@ Content-Type: application/json
 
 {
     "username": "Pesho", 
-    "password": "1234" 
+    "password": "123456" 
 }

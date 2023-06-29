@@ -30,7 +30,7 @@ app.post('/login', async (req, res) => {
         });
     }
 
-    let account; //// = {id: 7, userName: "pesho", password: "$2b$10$owKQraOqeJlgJy/R2vWK2OosVl2WodwtqgQBKtb2M/ZA3gKOiunbm"};
+    let account; //// = {id: 7, username: "pesho", password: "$2b$10$owKQraOqeJlgJy/R2vWK2OosVl2WodwtqgQBKtb2M/ZA3gKOiunbm"};
     
 
     if (email) {
@@ -78,7 +78,7 @@ app.post('/login', async (req, res) => {
         });
     } catch {};
 
-    const WebToken = token.generateWeb({ userName: account.username }, process.env.JWT_EXPIRES_IN);
+    const WebToken = token.generateWeb({ username: account.username }, process.env.JWT_EXPIRES_IN);
 
     return res.json({
         success: true,
@@ -182,7 +182,9 @@ app.get('/accounts/activate/:activationToken', async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            account: token.generateWeb(),
+            payload: {
+                account: token.generateWeb({ username: user.username }, process.env.JWT_EXPIRES_IN)
+            },
         });
 
     } catch (error) {
