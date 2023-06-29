@@ -1,5 +1,16 @@
 GET http://localhost:3000/posts
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODc5ODY0MDAsImV4cCI6MTY4Nzk4NjQxNX0.clWRivq5WCub9b6qJSxBVo76-VI0O82v-s4kOQ3G3kA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2ODgwNDY4MDEsImV4cCI6MTY4ODA0NjgxNn0.30z2kb1EXokPkIPPGUplyUaff9LjqWdee6rmFZcTm_U
+###
+POST http://localhost:4000/signup
+Content-Type: application/json
+
+{
+    "username" : "Pesho",
+    "password" : "1234",
+    "email": "pesho@pesho.pesho",
+    "displayName": "XXpeshoXX"
+}
+
 ###
 POST http://localhost:4000/token
 Content-Type: application/json
