@@ -3,10 +3,7 @@ require('dotenv').config();
 import { PrismaClient, States } from '@prisma/client';
 import express from "express"
 
-const multer = require("multer");
-const upload = multer({ dest: "../uploads/" });
-
-import { ReadStream } from 'fs';
+const bcrypt = require("bcrypt");
 
 
 const Token = require("./tokenFunctions.js")
@@ -32,7 +29,7 @@ app.post('/login', async (req, res) => {
         });
     }
 
-    let account = {id: 7, userName: "pesho", password: "1234"};
+    let account = {id: 7, userName: "pesho", password: "$2b$10$owKQraOqeJlgJy/R2vWK2OosVl2WodwtqgQBKtb2M/ZA3gKOiunbm"};
     
     /* 
         ! FOR NOW
@@ -53,25 +50,26 @@ app.post('/login', async (req, res) => {
         });
     } */
 
-
-    // TODO: Validate password
-
+    //* validate password
+    try{
+        if (! await bcrypt.compare(password, account.password)) {
+            return res.sendStatus(403);
+        }
+    } catch {
+        return res.sendStatus(500);
+    }
 
     const accessToken = generateAccessToken( { userName: account.userName  });
-    const refreshToken = jwt.sign( { id: account.id, userName: account.userName  }, process.env.RESET_TOKEN_SECRET)
-
 
     return res.json({
         success: true,
         accessToken: accessToken,
-        refreshToken: refreshToken
     });
 
 });
 
 
 app.post('/token', async (req, res) => {
-    console.log("ha");
     const refreshToken = req.body.token; 
     if(refreshToken == null) return res.sendStatus(401);
 
@@ -90,14 +88,14 @@ app.post('/token', async (req, res) => {
 });
 
 
-app.delete('/logout/', async (req, res) => {
+app.delete('/logout', async (req, res) => {
     const refreshToken = req.body.token; 
 
     if(!refreshToken) return res.sendStatus(401);
 
     const account = await prisma.account.update({
         where: { refreshToken },
-        data: { isActive: 1 },
+        data: { refreshToken: "" },
     });
 
     if(!account) return res.sendStatus(403);
@@ -106,55 +104,45 @@ app.delete('/logout/', async (req, res) => {
 });
 
 
-//* 4. Fetch account data trough a web token. 
-//* If it doesnt exist make him login. 
-//* If a unique token is missing make him confirm mail.
-app.post('/login/:accessToken', async (req, res) => {
-
-})
-
-
 
 //*5 signup
 app.post('/signup', async (req, res) => {
+    const { email, username, displayName, password } = req.body;
+    
     try {
 
-        const { email, userName, displayName, password } = req.body;
-        
+        const hashedPasswored = await bcrypt.hash(password, 10);
+        console.log(hashedPasswored);
+
         //* DB stuff here
         let createdAt = null;
         
         const ipAddress = (req.header('x-forwarded-for') || req.socket.remoteAddress || "");
-        let resetHash = tokenf.generateSecretKey();
+        const refreshToken = jwt.sign({ username: username }, process.env.JWT_SECRET)
         // const result = await prisma.account.create({
         //     data: {
         //         email,
-        //         userName,
+        //         username,
         //         displayName,
-        //         password,
+        //         password: hashedPasswored,
                 
-        //         resetHash,
+        //         refreshToken,
         //         ipsSeen: [ipAddress], // Set it to an initial value
         //         permissionLevel: 1
         //     },
         // });
-
-
-
         
-        res.json({
-            success: true,
-            // payload: result,
-            payload: {},
-        });
+        //TODO this link doesnt work 
+        tokenf.sendConfirmationMail(`http://localhost:4000/accounts/${generateAccessToken({ username: username })}/activate`);
 
-        tokenf.sendConfirmationMail("")
-    } catch (error) {
+        return res.sendStatus(200);
+
+    } catch(error) {
         console.error('Error creating account:', error);
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             error: 'Failed to create account.',
-        });
+        });   
     }
 });
 
@@ -164,6 +152,12 @@ app.post('/signup', async (req, res) => {
 app.put('/accounts/:refreshToken/activate', async (req, res) => {
     try {
         const { refreshToken } = req.params;
+
+        jwt.verify(refreshToken, process.env.RESET_TOKEN_SECRET, (err:any, user:any) => {
+            if(err) res.sendStatus(403);
+            const accessToken = generateAccessToken({ username: user.username });
+            res.json({accessToken: accessToken});
+        });
 
         const account = await prisma.account.update({
             where: { refreshToken },
