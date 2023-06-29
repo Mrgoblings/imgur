@@ -80,4 +80,5 @@ model IpSeen {
   ip          String
   account     Account  @relation(fields: [accountId], references: [id])
   accountId   Int
+  @@unique([ip, accountId])
 }

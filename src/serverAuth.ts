@@ -67,6 +67,17 @@ app.post('/login', async (req, res) => {
         return res.sendStatus(500);
     }
 
+    //* add the current IP if it has not been seen before
+    try{
+        const ipAddress = (req.header('x-forwarded-for') || req.socket.remoteAddress || "");
+        await prisma.ipSeen.create({
+            data: {
+                ip: ipAddress,
+                accountId: account.id,
+            }
+        });
+    } catch {};
+
     const WebToken = token.generateWeb({ userName: account.username }, process.env.JWT_EXPIRES_IN);
 
     return res.json({
@@ -124,7 +135,6 @@ app.post('/signup', async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
         
-        const ipAddress = (req.header('x-forwarded-for') || req.socket.remoteAddress || "");
         
         const account = await prisma.account.create({
             data: {
@@ -134,7 +144,8 @@ app.post('/signup', async (req, res) => {
                 password: hashedPassword,
             }
         });
-
+        
+        const ipAddress = (req.header('x-forwarded-for') || req.socket.remoteAddress || "");
         await prisma.ipSeen.create({
             data: {
                 ip: ipAddress,
@@ -154,6 +165,7 @@ app.post('/signup', async (req, res) => {
 });
 
 
+
 app.get('/accounts/activate/:activationToken', async (req, res) => {
     const { activationToken } = req.params;
 
@@ -163,14 +175,14 @@ app.get('/accounts/activate/:activationToken', async (req, res) => {
         const user = await jwt.verify(activationToken, process.env.JWT_SECRET);
         
         const refreshToken = token.generateRefresh({ username: user.username });
-        const account = await prisma.account.update({
+        await prisma.account.update({
             where: { username: user.username },
             data: { refreshToken },
         });
 
         return res.status(200).json({
             success: true,
-            account: account,
+            account: token.generateWeb(),
         });
 
     } catch (error) {
