@@ -8,23 +8,22 @@ import express from "express"
 
 // import { ReadStream } from 'fs';
 
-
-const bcrypt = require("bcrypt");
-
-
 const prisma = new PrismaClient();
 const app = express();
 app.use(express.json());
 
 const jwt = require("jsonwebtoken");
 
+const Token = require("./token.js");
+const token = new Token();
+
 
 
 //* 1. Fetch all posts. -- ready
-app.get('/posts', authenticateToken, async (req, res) => {
-    // const posts = await prisma.post.findMany({
-    //     where: { state: States.PUBLIC },
-    // })
+app.get('/posts', token.authenticate, async (req, res) => {
+    const posts = await prisma.post.findMany({
+        where: { state: States.PUBLIC },
+    })
 
     res.json({
         success: true,
@@ -55,16 +54,6 @@ app.get(`/posts/:id`, async (req, res) => {
 });
 
 
-
-//* 4. Fetch account data trough a web token. 
-//* If it doesnt exist make him login. 
-//* If a unique token is missing make him confirm mail.
-app.post('/loginAuth', authenticateToken, async (req, res) => {
-
-})
-
-
-
 /*
 //* 4. Create a new post 
 // TODO HERE
@@ -89,13 +78,13 @@ app.post(`/posts/:id`, upload.single("file"), async (req, res) => {
 
 
 //* 6. Deletes a post by its ID.  -- ready
-app.delete(`/posts/:id`, authenticateToken, async (req, res) => {
+app.delete(`/posts/:id`, token.authenticate, async (req, res) => {
     const { id } = req.params;
     const post = await prisma.post.delete({
         where: { id: Number(id) },
     })
 
-    res.json({
+    return res.json({
         success: true,
         payload: post,
     })
@@ -132,19 +121,3 @@ app.use((req, res, next) => {
 app.listen(3000, () =>
     console.log('REST API server ready at: http://localhost:3000'),
 );
-
-
-
-function authenticateToken(req: any, res: any, next: any) {
-    const authHeader = req.headers["authorization"];
-    const token = authHeader && authHeader.split(" ")[1];
-
-    if(token == null) res.sendStatus(401);
-
-    jwt.verify(token, process.env.JWT_SECRET, (err: any, user: any) => {
-        if(err)return res.sendStatus(403);
-        req.user = user;
-        next();
-    });
-}
-

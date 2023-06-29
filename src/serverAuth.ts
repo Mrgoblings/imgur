@@ -2,20 +2,21 @@ require('dotenv').config();
 
 import { PrismaClient, States } from '@prisma/client';
 import express from "express"
-
-const bcrypt = require("bcrypt");
-
-
-const Token = require("./tokenFunctions.js")
-
-
-const prisma = new PrismaClient();
 const app = express();
 app.use(express.json());
 
-const jwt = require("jsonwebtoken");
-const tokenf = new Token();
 
+const bcrypt = require("bcrypt");
+
+const Mail = require("./mail.js");
+const mail = new Mail();
+
+const Token = require("./token.js");
+const token = new Token();
+
+const prisma = new PrismaClient();
+
+const jwt = require("jsonwebtoken");
 
 
 //* 3.login to create jwt token
@@ -29,17 +30,16 @@ app.post('/login', async (req, res) => {
         });
     }
 
-    let account = {id: 7, userName: "pesho", password: "$2b$10$owKQraOqeJlgJy/R2vWK2OosVl2WodwtqgQBKtb2M/ZA3gKOiunbm"};
+    let account; //// = {id: 7, userName: "pesho", password: "$2b$10$owKQraOqeJlgJy/R2vWK2OosVl2WodwtqgQBKtb2M/ZA3gKOiunbm"};
     
-    /* 
-        ! FOR NOW
+
     if (email) {
         account = await prisma.account.findFirst({
             where: { email },
         });
-    } else if (userName) {
+    } else if (username) {
         account = await prisma.account.findFirst({
-            where: { userName },
+            where: { username },
         });
     }
 
@@ -48,7 +48,15 @@ app.post('/login', async (req, res) => {
             success: false,
             error: 'Account not found.',
         });
-    } */
+    }
+
+    if (!account.refreshToken) {
+        return res.status(404).json({
+            success: false,
+            error: 'Account not active.',
+        });
+    }
+
 
     //* validate password
     try{
@@ -59,11 +67,11 @@ app.post('/login', async (req, res) => {
         return res.sendStatus(500);
     }
 
-    const accessToken = generateAccessToken( { userName: account.userName  });
+    const WebToken = token.generateWeb({ userName: account.username }, process.env.JWT_EXPIRES_IN);
 
     return res.json({
         success: true,
-        accessToken: accessToken,
+        WebToken: WebToken,
     });
 
 });
@@ -71,19 +79,19 @@ app.post('/login', async (req, res) => {
 
 app.post('/token', async (req, res) => {
     const refreshToken = req.body.token; 
-    if(refreshToken == null) return res.sendStatus(401);
+    if(!refreshToken) return res.sendStatus(401);
 
 
-    // let account = await prisma.account.findFirst({
-    //     where: { refreshToken },
-    // });
+    let account = await prisma.account.findFirst({
+        where: { refreshToken },
+    });
 
-    // if(!account) return res.sendStatus(403);
+    if(!account) return res.sendStatus(403);
 
-    jwt.verify(refreshToken, process.env.RESET_TOKEN_SECRET, (err:any, user:any) => {
+    await jwt.verify(refreshToken, process.env.RESET_TOKEN_SECRET, (err:any, user:any) => {
         if(err) res.sendStatus(403);
-        const accessToken = generateAccessToken({ username: user.username });
-        res.json({accessToken: accessToken});
+        const WebToken = token.generateWeb({ username: user.username }, process.env.JWT_EXPIRES_IN);
+        res.json({WebToken: WebToken});
     });
 });
 
@@ -109,31 +117,30 @@ app.delete('/logout', async (req, res) => {
 app.post('/signup', async (req, res) => {
     const { email, username, displayName, password } = req.body;
     
+    //! 15 mins to confirm mail
+    const accessToken = token.generateWeb({ username: username }, "15m");
+    mail.sendConfirmationMail(email, `http://localhost:4000/accounts/activate/${accessToken}`);
+
     try {
-
-        const hashedPasswored = await bcrypt.hash(password, 10);
-        console.log(hashedPasswored);
-
-        //* DB stuff here
-        let createdAt = null;
+        const hashedPassword = await bcrypt.hash(password, 10);
         
         const ipAddress = (req.header('x-forwarded-for') || req.socket.remoteAddress || "");
-        const refreshToken = jwt.sign({ username: username }, process.env.JWT_SECRET)
-        // const result = await prisma.account.create({
-        //     data: {
-        //         email,
-        //         username,
-        //         displayName,
-        //         password: hashedPasswored,
-                
-        //         refreshToken,
-        //         ipsSeen: [ipAddress], // Set it to an initial value
-        //         permissionLevel: 1
-        //     },
-        // });
         
-        //TODO this link doesnt work 
-        tokenf.sendConfirmationMail(`http://localhost:4000/accounts/${generateAccessToken({ username: username })}/activate`);
+        const account = await prisma.account.create({
+            data: {
+                email,
+                username,
+                displayName,
+                password: hashedPassword,
+            }
+        });
+
+        await prisma.ipSeen.create({
+            data: {
+                ip: ipAddress,
+                accountId: account.id,
+            }
+        });
 
         return res.sendStatus(200);
 
@@ -142,41 +149,48 @@ app.post('/signup', async (req, res) => {
         return res.status(500).json({
             success: false,
             error: 'Failed to create account.',
-        });   
+        });
     }
 });
 
 
+app.get('/accounts/activate/:activationToken', async (req, res) => {
+    const { activationToken } = req.params;
 
-//* 5. Activate account
-app.put('/accounts/:refreshToken/activate', async (req, res) => {
+    console.log("activationToken: ", activationToken);
+    
     try {
-        const { refreshToken } = req.params;
-
-        jwt.verify(refreshToken, process.env.RESET_TOKEN_SECRET, (err:any, user:any) => {
-            if(err) res.sendStatus(403);
-            const accessToken = generateAccessToken({ username: user.username });
-            res.json({accessToken: accessToken});
-        });
-
+        const user = await jwt.verify(activationToken, process.env.JWT_SECRET);
+        
+        const refreshToken = token.generateRefresh({ username: user.username });
         const account = await prisma.account.update({
-            where: { refreshToken },
-            data: { isActive: 1 },
+            where: { username: user.username },
+            data: { refreshToken },
         });
 
-        res.json({
+        return res.status(200).json({
             success: true,
-            payload: account,
+            account: account,
         });
+
     } catch (error) {
-        console.error('Error updating account:', error);
-        res.status(500).json({
+        console.error('Error verifying activation token:', error);
+        if (error instanceof jwt.JsonWebTokenError) {
+          return res.sendStatus(401);
+        } else if (error instanceof jwt.TokenExpiredError) {
+          return res.status(400).json({
+            success: false,
+            error: 'Activation token has expired.',
+          });
+        } else {
+          return res.status(500).json({
             success: false,
             error: 'Failed to update account.',
-        });
-    }
-
+          });
+        }
+      }
 });
+
 
 
 
@@ -191,14 +205,6 @@ app.use((req, res, next) => {
 });
 
 
-
 app.listen(4000, () =>
     console.log('REST API server ready at: http://localhost:4000'),
 );
-
-
-
-function generateAccessToken(user:{}) {
-    return jwt.sign(user, process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRES_IN})
-}
-

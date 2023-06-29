@@ -10,7 +10,6 @@ datasource db {
 
 model Account {
   id              Int          @default(autoincrement())    @id
-  isActive        Int          @default(0)   
   email           String       @unique
   username        String       @unique
   displayName     String
@@ -18,9 +17,9 @@ model Account {
 
   createdAt       DateTime     @default(now())
 
-  refreshToken    String       @unique
+  refreshToken    String?      @unique
   ipsSeen         IpSeen[]
-  permissionLevel Int
+  permissionLevel Int          @default(1)
 
   posts           Post[]
   comments        Comments[]
@@ -45,6 +44,8 @@ model Post {
 
   sender     Account   @relation(fields: [senderId], references: [id])
   senderId   Int
+
+  tags       String[]
 
   comments   Comments[]
 }
