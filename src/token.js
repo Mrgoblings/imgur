@@ -17,6 +17,10 @@ class Token {
         if (!token) {
             token = req.cookies.jwtToken;
         }
+
+        if (!token) {
+            return res.sendStatus(401);
+        }
     
         await jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
             if(err)return res.sendStatus(403);

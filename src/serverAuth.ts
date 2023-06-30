@@ -5,6 +5,9 @@ import express from "express"
 const app = express();
 app.use(express.json());
 
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
 
 const bcrypt = require("bcrypt");
 
@@ -51,9 +54,13 @@ app.post('/login', async (req, res) => {
     }
 
     if (!account.refreshToken) {
-        return res.status(404).json({
+        //! 15 mins to confirm mail
+        const accessToken = token.generateWeb({ username: username }, "15m");
+        mail.sendConfirmationMail(email, `http://localhost:4000/accounts/activate/${accessToken}`);
+
+        return res.status(403).json({
             success: false,
-            error: 'Account not active.',
+            error: 'Account not active. Sending email to validate',
         });
     }
 
@@ -78,12 +85,9 @@ app.post('/login', async (req, res) => {
         });
     } catch {};
 
-    const WebToken = token.generateWeb({ username: account.username }, process.env.JWT_EXPIRES_IN);
-
-    return res.json({
-        success: true,
-        WebToken: WebToken,
-    });
+    //? process.env is type "string | undefined" ...?
+    res.cookie(process.env.COOKIE_JWT_KEY || "", token.generateWeb({ username: account.username }, process.env.JWT_EXPIRES_IN), {httpOnly: true});
+    return res.sendStatus(200);
 
 });
 
@@ -101,8 +105,10 @@ app.post('/token', async (req, res) => {
 
     await jwt.verify(refreshToken, process.env.RESET_TOKEN_SECRET, (err:any, user:any) => {
         if(err) res.sendStatus(403);
-        const WebToken = token.generateWeb({ username: user.username }, process.env.JWT_EXPIRES_IN);
-        res.json({WebToken: WebToken});
+        
+            //? process.env is type "string | undefined" ...?
+        res.cookie(process.env.COOKIE_JWT_KEY || "", token.generateWeb({ username: user.username }, process.env.JWT_EXPIRES_IN), {httpOnly: true});
+        return res.sendStatus(200);
     });
 });
 
@@ -157,7 +163,7 @@ app.post('/resetPassword', async (req, res) => {
     const accessToken = token.generateWeb({ username: account.username }, "15m");
     mail.sendConfirmationMail(email, `http://localhost:4000/accounts/resetPassword/${accessToken}`);
 
-    //TODO forget password stuff here. Think about it
+    //TODO forget password stuff
 });
 
 

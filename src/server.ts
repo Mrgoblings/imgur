@@ -7,6 +7,9 @@ const prisma = new PrismaClient();
 const app = express();
 app.use(express.json());
 
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
 const jwt = require("jsonwebtoken");
 
 const Token = require("./token.js");
