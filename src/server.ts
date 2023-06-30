@@ -29,8 +29,6 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage })
 
-// import { ReadStream } from 'fs';
-
 
 //* 1. Fetch all posts. -- ready
 app.get('/posts', async (req, res) => {
@@ -72,15 +70,16 @@ app.get(`/posts/:id`, async (req, res) => {
 
 
 //* 4. Create a new post 
-//TODO HERE
+//TODO authentication
 app.post(`/posts`, upload.single("file")/*, token.authenticate*/, async (req, res) => {
-    const { title, imageUrl, user } = req.body
+    const { title, imageUrl, user, state} = req.body
 
   try {
     const post = await prisma.post.create({
       data: {
         title,
         imageUrl,
+        state,
         sender: {
             connect: {
                 // id: user.id,

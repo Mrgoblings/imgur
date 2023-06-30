@@ -6,10 +6,58 @@
     <title>Document</title>
 </head>
 <body>
-    <form action="http://localhost:3000/posts" method="post" enctype="multipart/form-data">
-        <input type="file", name="file">
-        <input type="submit"> 
+    <form id="postForm" enctype="multipart/form-data">
+        <input type="file" name="file" id="fileInput">
+        <input type="text" name="title" id="titleInput">
+        <button type="button" id="stateButton">PUBLIC</button>
+        <input type="submit" value="Submit">
     </form>
+      
+    <script>
+        const stateButton = document.getElementById("stateButton");
+        let currentState = "PUBLIC";
+      
+        stateButton.addEventListener("click", function() {
+          if (currentState === "PRIVATE") {
+            currentState = "UNLISTED";
+            stateButton.textContent = "UNLISTED";
+          } else if (currentState === "UNLISTED") {
+            currentState = "PUBLIC";
+            stateButton.textContent = "PUBLIC";
+          } else {
+            currentState = "PRIVATE";
+            stateButton.textContent = "PRIVATE";
+          }
+        });
+      
+        document.getElementById("postForm").addEventListener("submit", function(event) {
+          event.preventDefault(); // Prevent the default form submission
+      
+          const formData = new FormData();
+          formData.append("file", document.getElementById("fileInput").files[0]);
+          formData.append("title", document.getElementById("titleInput").value);
+          formData.append("state", currentState);
+      
+          let response =  fetch("http://localhost:3000/posts", {
+            method: "POST",
+            body: formData
+          })
+            .then(response => {
+              if (response.ok) {
+                // Handle successful response
+                console.log("Post created successfully.");
+              } else {
+                // Handle error response
+                console.error("Failed to create post.");
+              }
+            })
+            .catch(error => {
+              // Handle network or other errors
+              console.error("Error creating post:", error);
+            });
+        });
+      </script>
+      
     
 </body>
 </html>
