@@ -43,10 +43,18 @@ app.get('/posts', async (req, res) => {
         posts = await prisma.post.findMany({
             where: {
                 state: States.PUBLIC,
-                title: {
-                    contains: query,
-                    mode: 'insensitive',
-                },
+                OR: [
+                    {
+                        title: {
+                            contains: query,
+                        },
+                    },
+                    {
+                        tags: {
+                            has: query,
+                        },
+                    },
+                ],
             },
         });
     } else {
@@ -123,7 +131,7 @@ app.post(`/posts`, upload.single("file")/*, token.authenticate*/, async (req, re
         sender: {
             connect: {
                 // id: user.id,
-                id: 18, //TODO change before production :0
+                id: 18, //TODO change before production :0  
             },
           },
       },
