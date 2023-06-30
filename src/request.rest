@@ -28,3 +28,8 @@ Content-Type: application/json
     "username": "Pesho", 
     "password": "123456" 
 }
+
+
+###
+GET  http://localhost:3000/posts
+

@@ -38,7 +38,7 @@ app.get('/posts', async (req, res) => {
 
     res.json({
         success: true,
-        payload: {works:true},
+        payload: posts,
     })
 });  //TODO upvotes and downvotes
 
@@ -54,10 +54,25 @@ app.get(`/posts/:id`, async (req, res) => {
 
         if(!post) return res.sendStatus(404);
 
-        res.json({
-            success: true,
-            payload: post,
-        })
+        if(post.state !== States.PUBLIC && post.state !== States.DELETED) {
+
+            token.authenticate(req, res, async () => {
+                if(req.body.user.id == post.senderId) {
+                    return res.json({
+                        success: true,
+                        payload: post,
+                    });
+                } else {
+                    return res.sendStatus(403);
+                }
+            });
+
+        } else {
+            return res.json({
+                success: true,
+                payload: post,
+            });
+        }
     } catch (error) {
         console.error('Error finding post :', error);
         res.status(500).json({
@@ -70,7 +85,6 @@ app.get(`/posts/:id`, async (req, res) => {
 
 
 //* 4. Create a new post 
-//TODO authentication
 app.post(`/posts`, upload.single("file")/*, token.authenticate*/, async (req, res) => {
     const { title, imageUrl, user, state} = req.body
 
@@ -109,8 +123,9 @@ app.post(`/posts`, upload.single("file")/*, token.authenticate*/, async (req, re
 //* 6. Deletes a post by its ID.  -- ready
 app.delete(`/posts/:id`, token.authenticate, async (req, res) => {
     const { id } = req.params;
-    const post = await prisma.post.delete({
+    const post = await prisma.post.update({
         where: { id: Number(id) },
+        data: {state: States.DELETED}
     })
 
     return res.json({

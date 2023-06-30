@@ -38,7 +38,7 @@
           formData.append("title", document.getElementById("titleInput").value);
           formData.append("state", currentState);
       
-          let response =  fetch("http://localhost:3000/posts", {
+          fetch("http://localhost:3000/posts", {
             method: "POST",
             body: formData
           })
