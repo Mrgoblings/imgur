@@ -3,11 +3,6 @@ require('dotenv').config();
 import { PrismaClient, States } from '@prisma/client';
 import express from "express"
 
-// const multer = require("multer"); //TODO convert images to webp - best
-// const upload = multer({ dest: "../uploads/" });
-
-// import { ReadStream } from 'fs';
-
 const prisma = new PrismaClient();
 const app = express();
 app.use(express.json());
@@ -17,6 +12,24 @@ const jwt = require("jsonwebtoken");
 const Token = require("./token.js");
 const token = new Token();
 
+
+const path = require("path");
+
+const multer = require("multer"); 
+const storage = multer.diskStorage({
+    destination: (res:any, file:any, cb:any) => {
+        cb(null, "../uploads");
+    },
+    filename: (req:any, file:any, cb:any) => {
+        console.log(file);
+        const newFileName = Date.now + path.extname(file.originalname);
+        cb(null, newFileName);
+        req.imageUrl = `http://localhost:3000/images/${newFileName}`;  //TODO testing here
+    }
+});
+const upload = multer({ storage: storage})
+
+// import { ReadStream } from 'fs';
 
 
 //* 1. Fetch all posts. -- ready
@@ -29,7 +42,7 @@ app.get('/posts', token.authenticate, async (req, res) => {
         success: true,
         payload: {works:true},
     })
-});
+});  //TODO upvotes and downvotes
 
 
 //* 2. Fetch a specific post by its ID.  -- ready
@@ -54,26 +67,25 @@ app.get(`/posts/:id`, async (req, res) => {
 });
 
 
-/*
+
 //* 4. Create a new post 
-// TODO HERE
-app.post(`/posts/:id`, upload.single("file"), async (req, res) => {
-    const { title, imageUrl, singerEmail } = req.body
+//TODO HERE
+app.post(`/posts`, upload.single("file"), async (req, res) => {
+    const { title, imageUrl, senderId } = req.body
     const result = await prisma.post.create({
         data: {
             title,
-            image,
-            state,
-            createdAt,
-            senderId: ,
+            imageUrl,
+            senderId: senderId,
         },
     })
+
     res.json({
         success: true,
         payload: result,
     })
 });
-*/
+
 
 
 
@@ -104,6 +116,9 @@ app.get('/posts/:id/comments', async (req, res) => {
     })
 });
 
+
+
+app.use('/mysite/image', express.static(path.join(__dirname, '../uploads')));
 
 
 //* default
