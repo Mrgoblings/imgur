@@ -18,22 +18,22 @@ const path = require("path");
 const multer = require("multer"); 
 const storage = multer.diskStorage({
     destination: (res:any, file:any, cb:any) => {
-        cb(null, "../uploads");
+        cb(null,__dirname +  "/../uploads");
     },
     filename: (req:any, file:any, cb:any) => {
         console.log(file);
-        const newFileName = Date.now + path.extname(file.originalname);
+        const newFileName = Date.now() + path.extname(file.originalname);
         cb(null, newFileName);
-        req.imageUrl = `http://localhost:3000/images/${newFileName}`;  //TODO testing here
+        req.body.imageUrl = `http://localhost:3000/images/${newFileName}`;  //TODO testing here
     }
 });
-const upload = multer({ storage: storage})
+const upload = multer({ storage: storage })
 
 // import { ReadStream } from 'fs';
 
 
 //* 1. Fetch all posts. -- ready
-app.get('/posts', token.authenticate, async (req, res) => {
+app.get('/posts', async (req, res) => {
     const posts = await prisma.post.findMany({
         where: { state: States.PUBLIC },
     })
@@ -53,6 +53,9 @@ app.get(`/posts/:id`, async (req, res) => {
         const post = await prisma.post.findFirst({
             where: { id: Number(id) },
         })
+
+        if(!post) return res.sendStatus(404);
+
         res.json({
             success: true,
             payload: post,
@@ -70,20 +73,35 @@ app.get(`/posts/:id`, async (req, res) => {
 
 //* 4. Create a new post 
 //TODO HERE
-app.post(`/posts`, upload.single("file"), async (req, res) => {
-    const { title, imageUrl, senderId } = req.body
-    const result = await prisma.post.create({
-        data: {
-            title,
-            imageUrl,
-            senderId: senderId,
-        },
-    })
+app.post(`/posts`, upload.single("file")/*, token.authenticate*/, async (req, res) => {
+    const { title, imageUrl, user } = req.body
 
-    res.json({
-        success: true,
-        payload: result,
-    })
+  try {
+    const post = await prisma.post.create({
+      data: {
+        title,
+        imageUrl,
+        sender: {
+            connect: {
+                // id: user.id,
+                id: 18,
+            },
+          },
+      },
+    });
+
+    return res.status(200).json({
+      success: true,
+      post: post,
+    });
+
+  } catch (error) {
+    console.error('Error creating post:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to create post.',
+    });
+  }
 });
 
 
@@ -118,7 +136,7 @@ app.get('/posts/:id/comments', async (req, res) => {
 
 
 
-app.use('/mysite/image', express.static(path.join(__dirname, '../uploads')));
+app.use('/images', express.static(path.join(__dirname, '../uploads')));
 
 
 //* default
