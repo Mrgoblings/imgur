@@ -5,10 +5,18 @@ const jwt = require("jsonwebtoken");
 
 class Token {
     async authenticate(req, res, next) {
+        let token;
+
+        //* Check if token is in the authorization header
         const authHeader = req.headers["authorization"];
-        const token = authHeader && authHeader.split(" ")[1];
-    
-        if(token == null) res.sendStatus(401);
+        if (authHeader && authHeader.startsWith("Bearer ")) {
+            token = authHeader.substring(7);
+        }
+
+        //* If token not found in authorization header, check cookies
+        if (!token) {
+            token = req.cookies.jwtToken;
+        }
     
         await jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
             if(err)return res.sendStatus(403);
