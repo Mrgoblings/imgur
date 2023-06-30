@@ -27,7 +27,7 @@ const storage = multer.diskStorage({
         console.log(file);
         const newFileName = Date.now() + path.extname(file.originalname);
         cb(null, newFileName);
-        req.body.imageUrl = `http://localhost:3000/images/${newFileName}`;  //TODO testing here
+        req.body.imageUrl = `http://localhost:3000/images/${newFileName}`;
     }
 });
 const upload = multer({ storage: storage })
@@ -35,11 +35,33 @@ const upload = multer({ storage: storage })
 
 //* 1. Fetch all posts. -- ready
 app.get('/posts', async (req, res) => {
-    const posts = await prisma.post.findMany({
-        where: { state: States.PUBLIC },
-    })
+    const { query } = req.body;
+    
+    let posts;
 
-    res.json({
+    if (query) {
+        posts = await prisma.post.findMany({
+            where: {
+                state: States.PUBLIC,
+                title: {
+                    contains: query,
+                    mode: 'insensitive',
+                },
+            },
+        });
+    } else {
+        try {
+            posts = await prisma.post.findMany({
+                where: { state: States.PUBLIC },
+            });
+        } catch {
+            if(!posts) return res.json({success: false, error: "query not found"}).sendStatus(204);
+        }
+    }
+
+    if(!posts) return res.sendStatus(204);
+
+    return res.json({
         success: true,
         payload: posts,
     })
@@ -89,7 +111,7 @@ app.get(`/posts/:id`, async (req, res) => {
 
 //* 4. Create a new post 
 app.post(`/posts`, upload.single("file")/*, token.authenticate*/, async (req, res) => {
-    const { title, imageUrl, user, state} = req.body
+    const { title, imageUrl, user, state, tags} = req.body
 
   try {
     const post = await prisma.post.create({
@@ -97,10 +119,11 @@ app.post(`/posts`, upload.single("file")/*, token.authenticate*/, async (req, re
         title,
         imageUrl,
         state,
+        tags,
         sender: {
             connect: {
                 // id: user.id,
-                id: 18,
+                id: 18, //TODO change before production :0
             },
           },
       },

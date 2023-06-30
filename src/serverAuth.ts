@@ -85,7 +85,7 @@ app.post('/login', async (req, res) => {
         });
     } catch {};
 
-    //? process.env is type "string | undefined" ...?
+        //? process.env is type "string | undefined" ...?
     res.cookie(process.env.COOKIE_JWT_KEY || "", token.generateWeb({ username: account.username }, process.env.JWT_EXPIRES_IN), {httpOnly: true});
     return res.sendStatus(200);
 

@@ -31,7 +31,7 @@
         });
       
         document.getElementById("postForm").addEventListener("submit", function(event) {
-          event.preventDefault(); // Prevent the default form submission
+          event.preventDefault(); //* Prevent the default form submission
       
           const formData = new FormData();
           formData.append("file", document.getElementById("fileInput").files[0]);

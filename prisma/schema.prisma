@@ -44,7 +44,7 @@ model Post {
 
   sender     Account   @relation(fields: [senderId], references: [id])
   senderId   Int
-  keywords   String[]
+  // keywords   String[]
 
   tags       String[]
 
