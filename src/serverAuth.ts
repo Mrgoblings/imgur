@@ -89,7 +89,8 @@ app.post('/login', async (req, res) => {
     } catch {};
 
         //? process.env is type "string | undefined" ...?
-    res.cookie(process.env.COOKIE_JWT_KEY || "", token.generateWeb({ username: account.username }, process.env.JWT_EXPIRES_IN), {httpOnly: true});
+    res.cookie(process.env.COOKIE_ACCESS_TOKEN_KEY || "", token.generateWeb({ username: account.username }, process.env.ACCESS_TOKEN_EXPIRES_IN), {httpOnly: true});
+    res.cookie(process.env.COOKIE_ACCESS_TOKEN_KEY || "", token.generateWeb({ username: account.username }, process.env.ACCESS_TOKEN_EXPIRES_IN), {httpOnly: true});
     res.cookie("isLogged", true);
     return res.sendStatus(200);
 
@@ -105,13 +106,13 @@ app.post('/token', async (req, res) => {
         where: { refreshToken },
     });
 
-    if(!account) return res.sendStatus(403);
+    if(!account) return res.sendStatus(401);
 
     await jwt.verify(refreshToken, process.env.RESET_TOKEN_SECRET, (err:any, user:any) => {
-        if(err) res.sendStatus(403);
+        if(err) return res.sendStatus(403);
         
             //? process.env is type "string | undefined" ...?
-        res.cookie(process.env.COOKIE_JWT_KEY || "", token.generateWeb({ username: user.username }, process.env.JWT_EXPIRES_IN), {httpOnly: true});
+        res.cookie(process.env.COOKIE_ACCESS_TOKEN_KEY || "", token.generateWeb({ username: user.username }, process.env.ACCESS_TOKEN_EXPIRES_IN), {httpOnly: true});
         res.cookie("isLogged", true);
         
         return res.sendStatus(200);
@@ -128,16 +129,16 @@ app.delete('/logout', async (req, res) => {
         where: { refreshToken },
         data: { refreshToken: "" },
     });
-    res.cookie("isLogged", false);
-
+    
     if(!account) return res.sendStatus(403);
     
+    res.cookie("isLogged", false);
     return res.sendStatus(204);
 });
 
 
 
-app.post('/resetPassword', async (req, res) => {
+app.post('/resetPassword', token.authenticate, async (req, res) => {
     const { email, username } = req.body;
 
     if (!email && !username) {
@@ -150,6 +151,17 @@ app.post('/resetPassword', async (req, res) => {
     let account;
 
     if (email) {
+
+        await prisma.account.update({
+            where: { email },
+            data: { refreshToken: "" },
+        });
+
+        await prisma.account.update({
+            where: { username },
+            data: { refreshToken: "" },
+        });
+
         account = await prisma.account.findFirst({
             where: { email },
         });
@@ -169,8 +181,6 @@ app.post('/resetPassword', async (req, res) => {
     //! 15 mins to confirm mail
     const accessToken = token.generateWeb({ username: account.username }, "15m");
     mail.sendConfirmationMail(email, `http://localhost:4000/accounts/resetPassword/${accessToken}`);
-
-    //TODO forget password stuff
 });
 
 
@@ -223,7 +233,7 @@ app.get('/accounts/activate/:activationToken', async (req, res) => {
     console.log("activationToken: ", activationToken);
     
     try {
-        const user = await jwt.verify(activationToken, process.env.JWT_SECRET);
+        const user = await jwt.verify(activationToken, process.env.ACCESS_TOKEN_SECRET);
         
         const refreshToken = token.generateRefresh({ username: user.username });
         await prisma.account.update({
@@ -234,7 +244,7 @@ app.get('/accounts/activate/:activationToken', async (req, res) => {
         return res.status(200).json({
             success: true,
             payload: {
-                account: token.generateWeb({ username: user.username }, process.env.JWT_EXPIRES_IN)
+                account: token.generateWeb({ username: user.username }, process.env.ACCESS_TOKEN_EXPIRES_IN)
             },
         });
 

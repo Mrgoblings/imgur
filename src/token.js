@@ -21,9 +21,9 @@ class Token {
         if (!token) {
             return res.sendStatus(401);
         }
-    
-        await jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-            if(err)return res.sendStatus(403);
+
+        await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+            if (err) return res.sendStatus(403);
             req.user = user;
             next();
         })
@@ -34,7 +34,9 @@ class Token {
     }
 
     generateWeb(user, expires) {
-        return jwt.sign(user, process.env.JWT_SECRET, {expiresIn: expires});
+        return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+            expiresIn: expires
+        });
     }
 };
 
