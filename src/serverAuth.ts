@@ -21,6 +21,9 @@ const prisma = new PrismaClient();
 
 const jwt = require("jsonwebtoken");
 
+const cors = require('cors');
+app.use(cors());
+
 
 //* 3.login to create jwt token
 app.post('/login', async (req, res) => {

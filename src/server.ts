@@ -32,6 +32,9 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage })
 
+const cors = require('cors');
+app.use(cors());
+
 
 //* 1. Fetch all posts. -- ready
 app.get('/posts', async (req, res) => {
