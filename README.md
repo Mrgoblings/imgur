@@ -1,7 +1,7 @@
 # Organizators' Team Interview Project - HACKTUES 2023 (imgur clone)
 
 ## Frontend Disclaimer
-**IMPORTANT: THE FRONT END IS NOT MINE!1!!  (IMPORTANT)
+***IMPORTANT:*** THE FRONT END IS **NOT** MINE!1!!  (***IMPORTANT***)
 
 Everything that is in folder "frontend" is made from Valentin Asenov, a fellow candidate for the it organizator position. - https://github.com/alt-plus-f4/imgur
 
@@ -63,7 +63,7 @@ This project is developed as part of the interview process for the Organizators'
             |CommentHistory|  |
             +--------------+  |
         +-----id           |  |
-        |   | body         |  |
+        | 1 | body         |  |
         |   | modifiedAt   | N|
         |   | commentId ------+
         |   +--------------+ 
@@ -75,7 +75,7 @@ This project is developed as part of the interview process for the Organizators'
         |   +--------------+  
         |   | id           |  
         |   | ip           |  
-        |   | modifiedAt   | 
+        | N | modifiedAt   | 
         +---- commentId    |
             +--------------+ 
 ```
@@ -154,9 +154,8 @@ npm install
 ```
 
 
-3. Set up the database:
-
-- Create a PostgreSQL database (could be a docker).
+3. Set up the .env and database:
+   
 - Create a `.env` file with your credentials.
 
 ```
@@ -185,7 +184,12 @@ EMAIL_PORT=587
 # Cookie Configuration
 COOKIE_JWT_KEY="YourCookieKey"
 ```
-*The <random_data> should be a random string of at least 256 bytes (could use a crypto lirary for crypto.randomBits(512).toSting() or just some random text)
+*The <random_data> should be a random string of at least 256 bytes (could use a crypto lirary for crypto.randomBits(512).toSting() or just some random text)*
+
+- Create a PostgreSQL database (could be a docker).
+  ```
+  docker-compose --env-file .env up -d
+  ```
 
 4. Run database migrations:
 ```
