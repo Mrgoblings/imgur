@@ -38,7 +38,7 @@ app.use(cors());
 
 //* 1. Fetch all posts. -- ready
 app.get('/posts', async (req, res) => {
-    const { query } = req.body;
+    const query  = `${req.url}`.split("?")[1];
     
     let posts;
 

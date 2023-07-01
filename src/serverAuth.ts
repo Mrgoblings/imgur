@@ -90,6 +90,7 @@ app.post('/login', async (req, res) => {
 
         //? process.env is type "string | undefined" ...?
     res.cookie(process.env.COOKIE_JWT_KEY || "", token.generateWeb({ username: account.username }, process.env.JWT_EXPIRES_IN), {httpOnly: true});
+    res.cookie("isLogged", true);
     return res.sendStatus(200);
 
 });
@@ -111,6 +112,8 @@ app.post('/token', async (req, res) => {
         
             //? process.env is type "string | undefined" ...?
         res.cookie(process.env.COOKIE_JWT_KEY || "", token.generateWeb({ username: user.username }, process.env.JWT_EXPIRES_IN), {httpOnly: true});
+        res.cookie("isLogged", true);
+        
         return res.sendStatus(200);
     });
 });
@@ -125,6 +128,7 @@ app.delete('/logout', async (req, res) => {
         where: { refreshToken },
         data: { refreshToken: "" },
     });
+    res.cookie("isLogged", false);
 
     if(!account) return res.sendStatus(403);
     
