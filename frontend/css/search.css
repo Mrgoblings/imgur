@@ -1,0 +1,49 @@
+
+
+body, html{
+   background: #141518;
+}
+
+.result-section{
+    margin-left: 5%;
+    margin-right: 5%;
+    padding-right: 20px;
+
+	background: #3c424b;
+	display: flex;
+	overflow: hidden;
+	flex-wrap: wrap;
+	align-items: center;
+  	justify-content: center;
+    border-radius: 3px;
+}
+
+.result-Container{
+	cursor: pointer;
+	margin-left: 20px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	height: 100%;
+    width: 250px;
+	overflow: hidden;
+	border-radius: 3px;
+	box-shadow: 0.1px 0.1px 6px black;
+	transition: 0.5s;
+}
+.result-Container:hover{
+	transition: 0.5s;
+	filter: brightness(130%);
+}
+.digging{
+    color: white;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    margin: 20px;
+}
+.digging h1{
+    background: transparent;
+}
+.noback{
+    background: transparent;
+}

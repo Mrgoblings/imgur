@@ -1,0 +1,234 @@
+
+*{
+    font-family: 'Open Sans', sans-serif;
+}
+
+:root {
+	--gay-red: #FF0018;
+	--gay-orange: #FFA52C;
+	--gay-yellow: #FFFF41;
+	--gay-green: #008018;
+	--gay-blue: #0000F9;
+	--gay-indigo: #4B0082;
+	--gay-violet: #EE82EE;
+	--red: 255;
+	--green: 255;
+	--blue: 255;
+}
+
+body{   
+    background-color: #141518;
+}
+
+#backHome{
+    margin: 20px;
+}
+
+.backHomeText{
+    font-size: 15px;
+    text-decoration: none;
+    color: white;
+    transition: 0.5s;
+
+}
+
+.backHomeText:hover{
+    font-size: 16px;
+    color: rgba(226, 226, 226, 0.541);
+    text-decoration: none;
+    transition: 0.5s;
+}
+
+.login-box{
+    width: 350px;
+    padding-top: 80px;
+    margin: auto;
+    box-sizing: border-box;
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+.upvote{
+	height: 15px;
+	width: 15px;
+    margin-bottom: 3px;
+	background-color: transparent;
+	filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(216deg) brightness(102%) contrast(102%);
+	transition: 0.1s;
+}
+
+.logo{
+    display: flex;
+    position: relative;
+    width: 350px;
+    height: 65px;
+    justify-content: center;
+}
+
+.navbar-brand{
+	background: linear-gradient(to right, var(--gay-red), var(--gay-yellow), var(--gay-green), var(--gay-blue));
+	background-clip: text;
+	-webkit-background-clip: text;
+	color: transparent;
+	transition: 0.5s;
+
+	font-size: 45px;
+	margin-top: 0;
+	margin-left: 20px;
+	cursor: pointer;
+	transition: 0.5s;
+    
+    text-shadow: none;
+
+
+}
+.navbar-brand:hover {
+    text-shadow: 2px 2px black;
+    color: white;
+}
+
+.title{
+    display: flex;
+    width: 350px;
+    justify-content: center;
+}
+
+.titleText{
+    font-size: 13px;
+    color: white;
+    margin-left: 15px;
+}
+
+.user-details{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 350px;
+    background: #2C2F34;
+    padding-top: 10px;
+    border-radius: 5px;
+}
+
+.input-box{
+    margin-bottom: 10px;
+}
+
+.input{
+    width: 325px;
+    background: #141518;
+    border-radius: 5px;
+    border: 1px solid transparent;
+    outline: 0;
+    padding: 5px 10px;
+    color: white;
+    transition: 0.5s;
+
+}
+.input:hover{
+    filter: brightness(130%);
+    transition: 0.5s;
+}
+
+.input-password{
+    width: 260px;
+    background: #141518;
+    border-radius: 5px;
+    border: 1px solid transparent;
+    outline: 0;
+    padding: 5px 10px;
+    color: white;
+    transition: 0.5s;
+}
+.input-password:hover{
+    filter: brightness(130%);
+    transition: 0.5s;
+}
+
+.forgot{
+    padding-top: 4px;
+    padding-bottom: 4px;
+    background: #999;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    transition: 0.5s;
+}
+.forgot:hover{
+    filter: brightness(130%);
+    transition: 0.5s;
+}
+
+.signin-container{
+    display: flex;
+    justify-content: space-between;
+    margin: 15px;
+    margin-top: 10px;
+}
+
+.signup{
+    margin-top: 5px;
+}
+
+.signup a{
+    color: white;
+    text-decoration: none;
+    transition: 0.5s;
+}
+
+.signup a:hover{
+    font-size: 15px;
+    color: rgba(226, 226, 226, 0.541);
+    text-decoration: none;
+    transition: 0.5s;
+}
+
+.signin{
+    margin-top: 13px;
+    margin-right: 25px;
+}
+.signin a{
+    color: white;
+    text-decoration: none;
+    transition: 0.5s;
+}
+.signin a:hover{
+    font-size: 15px;
+    color: rgba(226, 226, 226, 0.541);
+    text-decoration: none;
+    transition: 0.5s;
+}
+
+
+.signin-submit{
+    background: #5c69ff;
+    padding: 8px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border: 1px solid transparent;
+    color: white;
+    transition: 0.5s;
+}
+.signin-submit:hover{
+    filter: brightness(130%);
+    transition: 0.5s;
+}
+
+.signup-submit{
+    background: #5c69ff;
+    padding: 12px;
+    padding-left: 25px;
+    padding-right: 25px;
+    border: 1px solid transparent;
+    color: white;
+    transition: 0.5s;
+}
+.signup-submit:hover{
+    filter: brightness(130%);
+    transition: 0.5s;
+}
+.signup-container{
+    display: flex;
+    justify-content: space-between;
+    margin: 20px;
+}

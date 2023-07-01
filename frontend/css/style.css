@@ -1,0 +1,610 @@
+@import url('https://fonts.googleapis.com/css2?family=Belanosima&family=Roboto&display=swap');
+*{
+	font-family: 'Belanosima', sans-serif;
+	background: #3c424b;
+}
+
+:root {
+	--gay-red: #FF0018;
+	--gay-orange: #FFA52C;
+	--gay-yellow: #FFFF41;
+	--gay-green: #008018;
+	--gay-blue: #0000F9;
+	--gay-indigo: #4B0082;
+	--gay-violet: #EE82EE;
+	--red: 255;
+	--green: 255;
+	--blue: 255;
+}
+
+#preloader {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: black; /* Background color of the preloader */
+	z-index: 9999; /* Ensure the preloader appears on top of other elements */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+body{
+	background: #3c424b;
+}
+
+.blur{
+	overflow:hidden;
+	transition:0.2s;
+	-webkit-filter: blur(4px);
+	filter: blur(4px);
+}
+
+.navbar-section{
+	background: #3c424b;
+}
+
+#navbar{
+	background: transparent;
+}
+
+.solid{
+	background: #171544;
+}
+
+.navbar{
+  	position: fixed;
+	transition: 0.5s;
+	
+}
+
+.navbar-brand{
+	color: #fff;
+	font-size: 25px;
+	margin-top: 0;
+	margin-left: 20px;
+	cursor: pointer;
+	transition: 0.5s;
+    text-shadow: 2px 2px black;
+
+}
+.navbar-brand:hover {
+	background: linear-gradient(to right, var(--gay-red), var(--gay-yellow), var(--gay-green), var(--gay-blue));
+	background-clip: text;
+	-webkit-background-clip: text;
+	color: transparent;
+	transition: 0.5s;
+    text-shadow: none;
+}
+
+.navbar-toggle{
+	margin-top: 5px;
+	padding: 1.2rem;
+}
+.navbar-header{
+	margin-top: 8px;
+	background: inherit;
+}
+
+.navbar-newpost{
+	padding: 1rem;
+	float: left;
+	margin-left: 30px;
+	margin-top: 5px;
+	background-color: #1bb76e;
+	border-radius: 3px;
+	cursor: pointer;
+	text-decoration: none;
+	color: white;
+}
+
+.navLink{
+	color: white;
+	text-decoration: none;
+	padding: 0;
+}
+.navLink:hover{
+	color: rgb(172, 172, 172);
+	text-decoration: none;
+}
+
+
+/* IMAGE UPLOAD */
+
+#popup-screen{
+	z-index: 100;
+	position: fixed;
+	background: rgba(255, 255, 255, 0.1);
+	backdrop-filter: blur(10px);
+	width: 100%;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	visibility: hidden;
+	transition: 0.5s ease;
+	transition-property: visibility;
+}
+  
+#popup-screen.active{
+	visibility: visible;
+}
+  
+.popup-box{
+	z-index: 1100;
+	position: relative;
+	background: rgba(255, 255, 255, 0.8);
+	backdrop-filter: blur(10px);
+	max-width: 350px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	margin: 20px;
+	padding: 50px 40px;
+	border-radius: 20px;
+	box-shadow: 0 5px 25px rgb(0 0 0 / 20%);
+	transform: scale(0);
+	transition: 0.5s ease;
+	transition-property: transform;
+}
+  
+#popup-screen.active .popup-box{
+	transform: scale(1);
+}
+  
+.popup-box h2{
+	font-size: 2.1em;
+	font-weight: 800;
+	margin-bottom: 20px;
+	background: transparent;
+}
+  
+.popup-box p{
+	background: transparent;
+	font-size: 1rem;
+	margin-bottom: 30px;
+}
+  
+.popup-box .btn{
+	color: #fff;
+	background: red;
+	font-size: 1.1em;
+	font-weight: 600;
+	text-transform: uppercase;
+	padding: 7px 27px;
+	border-radius: 4px;
+	text-decoration: none;
+	transition: 0.3s ease;
+}
+  
+.popup-box .btn:hover{
+	color: #000;
+	background: transparent;
+	border: 1px solid #000;
+}
+  
+.close-btn{
+	color: black;
+	position: absolute;
+	font-size: 1em;
+	top: 0;
+	right: 0;
+	margin: 15px;
+	cursor: pointer;
+	opacity: 0.5;
+	transition: 0.3s ease;
+	transition-property: opacity;
+}
+  
+.close-btn:hover{
+	opacity: 1;
+}
+
+.dragndropFile{
+	display: flex;
+	background: transparent;
+	justify-content: space-around;
+	padding: 100px 20px;
+	outline: 2px dashed #0000008e;
+	outline-offset: -10px;
+}
+
+.box-input{
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	background: transparent;
+}
+.box-icon{
+	background: inherit;
+	display: inherit;
+}
+
+.newPostFile{
+	background: inherit;
+	text-align: center;
+	display: inherit;
+	opacity: 0;
+}
+
+.fileUpload{
+	overflow: hidden;
+	display: inherit;
+	position: absolute;
+}
+.fileUploadLabel{
+	background: transparent;
+}
+.newPostSubmit{
+	background: inherit;
+}
+
+/* Need of keywords and tags */
+
+.data-input{
+	display: none;
+	flex-wrap: wrap;
+	background: transparent;
+	justify-content: center;
+}
+.data-input a{
+	color: black;
+	font-size: 18px;
+	text-decoration: none;
+}
+.data-input a:hover{
+	color: black;
+	text-decoration: none;
+}
+#titleInput{
+	display: inherit;
+	background: inherit;
+	border: 1px solid black;
+	width: 220px;
+	height: 30px;
+	transition: 0.5s;
+}
+#titleInput:hover{
+    filter: brightness(130%);
+	width: 225px;
+	height: 32px;
+    transition: 0.5s;
+}
+#stateButton{
+	margin-top: 5px;
+	margin-right: 5px;
+	border: 1px solid black;
+	padding: 10px;
+	padding-right: 18px;
+	padding-left: 18px;
+	display: inherit;
+	background: inherit;
+	transition: 0.5s;
+}
+#stateButton:hover{
+	background: #10460025;
+	padding: 11px;
+    transition: 0.5s;
+}
+#submitButton{
+	margin-top: 5px;
+	margin-left: 5px;
+	border: 1px solid black;
+	padding: 10px;
+	padding-right: 18px;
+	padding-left: 18px;
+	display: inherit;
+	background: inherit;
+    transition: 0.5s;
+}
+#submitButton:hover{
+	background: #10460025;
+	padding: 11px;
+    transition: 0.5s;
+}
+
+#myNavbar{
+	background: inherit;
+}
+.navbar-newpost:hover{
+	background-color: #20d681;
+	color: white;
+	text-decoration: none;
+}
+
+.icon-bar{
+  	background-color: #000;
+}
+
+.nav{
+	background: inherit;
+	font-family: Lithos Pro;
+	color: #fff;
+	padding: 10px 20px;
+}
+
+.nav li{
+	align-items: center;
+	padding: 1rem;
+	cursor: pointer;
+	font-size: 16px;
+	background: inherit;
+}
+
+.nav li a{
+	padding: 0;
+}
+
+.form {
+	display: flex;
+	flex-direction: row;
+	background: inherit;
+}
+
+.search-button {
+	background: transparent;
+	border: none;
+	outline: none;
+	margin-left: -33px;
+  }
+
+.search-button img {
+	background: transparent;
+	width: 18px;
+	height: 16px;
+}
+
+.navImage{
+	z-index: 1;
+	background-image: url(https://s.imgur.com/desktop-assets/desktop-assets/homebg.f51d3f34235dea1b7cdd.png);
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-size: cover;
+	object-fit: cover;
+	top: 0px;
+	min-height: 0px;
+	height: 250px;
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+	overflow: hidden;
+	margin-bottom: 20px;
+}
+.navImage h1{
+	font-size: 25px;
+	background: transparent;
+	color: #aed8ea;
+	margin-top: 11vh;
+	width: 100%;
+	text-align: center;
+}
+
+.tagContainer{
+	cursor: pointer;
+	height: 130px;
+	width: 170px;
+	text-align: center;
+	box-shadow: 0.2px 0.2px 6px black;
+	transition: 0.5s;
+	margin: 10px;
+}
+.tagContainer:hover{
+	filter: brightness(130%);
+	transition: 0.5s;
+}
+.tagText{
+	color: white;
+	text-decoration: none;
+}
+.tagText:hover{
+	color: white;
+	text-decoration: none;
+}
+
+.navSearch{
+	height: 65px;
+}
+
+.underline:after{
+	content: '';
+	display: block;
+	border-bottom: 2px solid #8787875e;
+	transform: scaleX(0);
+	transition: .2s ease-in-out;
+}
+
+.underline:hover:after{
+	transform: scaleX(1);
+}
+.search {
+	background-color: rgba(255,255,255,.25);
+
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	border: 1px solid transparent;
+	color: white;
+	border-radius: 3px;
+
+	margin: 0 0.5rem;
+}
+
+.images-section{
+	padding-left: 20px;
+	padding-right: 40px;
+	background: #3c424b;
+	display: flex;
+	overflow: hidden;
+	flex-wrap: wrap;
+	align-items: center;
+  	justify-content: center;
+}
+
+.imageContainer{
+	cursor: pointer;
+	margin-left: 20px;
+	margin-top: 20px;
+	height: 100%;
+	overflow: hidden;
+	border-radius: 3px;
+	box-shadow: 0.1px 0.1px 6px black;
+	transition: 0.5s;
+}
+.imageContainer:hover{
+	transition: 0.5s;
+	filter: brightness(130%);
+}
+.image{
+	min-width: 300px;
+	background-color: #1bb76e;
+}
+
+.color-loading {
+	/* filter: grayscale(100%); */
+	background-color: rgb(
+		calc(var(--red) * random()),
+		calc(var(--green) * random()),
+		calc(var(--blue) * random())
+  	);
+	transition: 1s ease;
+}
+  
+.color-loading.loaded {
+	filter: none;
+}
+
+.postData{
+	width: 300px;
+	height: 24px;
+	padding-top: 3px;
+	background: #474a51;
+	border-bottom: solid 4px transparent;
+	transition: background-color 250ms;
+	color: white;
+}
+
+.postText{
+	color: white;
+	margin-left: 10px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 200px;
+}
+
+.postInfo{
+	display: flex;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-bottom: 8px;
+	padding-top: 8px;
+
+	justify-content: space-between;
+	background: #474a51;
+}
+
+.upvoteContainer{
+	display: flex;
+	background: transparent;
+}
+
+.upvote{
+	height: 14px;
+	width: 14px;
+	background-color: transparent;
+	filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(216deg) brightness(102%) contrast(102%);
+	transition: 0.1s;
+}
+.upvote:hover{
+	filter: none;
+}
+.upvoteCount{
+	color: grey;
+	margin-left: 3px;
+	font-size: 12px;
+	height: 12px;
+	width: 12px;
+	background-color: transparent;
+}
+
+.downvoteContainer{
+	display: flex;
+	background: transparent;
+}
+
+.downvote{
+	height: 16px;
+	width: 16px;
+	background-color: transparent;
+	filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(216deg) brightness(102%) contrast(102%);
+	transition: 0.1s;
+}
+.downvote:hover{
+	filter: none;
+}
+.downvoteCount{
+	color: grey;
+	margin-left: 3px;
+	font-size: 12px;
+	height: 12px;
+	width: 12px;
+	background-color: transparent;
+}
+
+.commentContainer{
+	display: flex;
+	background: transparent;
+}
+
+.comment{
+	height: 14px;
+	width: 14px;
+	background-color: transparent;
+	filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(216deg) brightness(102%) contrast(102%);
+	transition: 0.1s;
+}
+.comment:hover{
+	filter: none;
+}
+.commentCount{
+	color: grey;
+	margin-left: 3px;
+	font-size: 12px;
+	height: 12px;
+	width: 12px;
+	background-color: transparent;
+}
+.tagButton{
+	background: inherit;
+	border: 1px solid black;
+	margin: auto;
+	margin-top: 5px;
+}
+.clicked{
+	background:rgba(118, 248, 135, 0.226);
+}
+
+body::-webkit-scrollbar-track{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+}
+
+body::-webkit-scrollbar{
+	width: 14px;
+}
+
+body::-webkit-scrollbar-thumb{
+
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.5);
+	background: #3c424b;
+}
+
+@media(max-width: 720px){
+	.navbar-collapse{
+		background: #3c424b;
+	}
+	.para{
+		min-height: 800px;
+	}
+}

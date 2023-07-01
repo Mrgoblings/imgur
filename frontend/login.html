@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<title>Imgur - Login</title>
+		<link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+
+		<meta name="author" content="Valentain" />
+		
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+		<link rel="stylesheet" href="css/accounts.css">
+		
+		
+</head>
+<body>
+
+
+<div id="preloader">
+	<img src="images/preloader.gif"/>
+</div>	
+
+<div id="backHome"><img src="images/upvote.svg" class="upvote"/><a class="backHomeText" href="/"> back to Home</a></div>
+
+<div class="login-box">
+	<a href="/">
+		<div class="logo">
+			<a href="/" class="navbar-brand">TUES</a>
+		</div>
+	</a>
+
+	<div class="title"><h1 class="titleText">Log in with fake imgur account</h1></div>
+	
+	<form action="login.php" method="post">
+		<div class="user-details">
+			<div class="input-box">
+				<input class="input" name="email" type="email" maxlength="255" placeholder="Enter email." required>
+			</div>
+			<div class="input-box">
+				<input class="input-password" name="password" type="password" placeholder="Enter password" required>
+                <button class="forgot">forgor?</button>
+			</div>
+		</div>
+		<div class="err">
+			<a><?php print($error); ?></a>
+		</div>
+		<div class="signin-container">
+            <div class="signup"><a href="/signup.html">need an account?</a></div>
+            <button class="signin-submit" name="submit" tabindex="8" type="submit" id="submit">Sign In</button>
+
+        </div>
+	</form>
+</div>
+
+<script src="js/script.js"></script> 
+
+</body>
+</html>
