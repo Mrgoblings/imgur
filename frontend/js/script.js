@@ -30,7 +30,9 @@ closeBtn.addEventListener("click", () => {
 
 searchForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    window.location.replace(`search.html?${searchBar.value}`);
+    if (searchBar.value)
+        window.location.replace(`search.html?${searchBar.value}`);
+    else window.location.replace(`index.html`);
 });
 
 var drop = document.getElementById("fileUpload");

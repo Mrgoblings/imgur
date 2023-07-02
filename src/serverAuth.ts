@@ -59,7 +59,7 @@ app.post('/login', async (req, res) => {
     if (!account.refreshToken) {
         //! 15 mins to confirm mail
         const accessToken = token.generateWeb({ username: username }, "15m");
-        mail.sendConfirmationMail(email, `http://localhost:4000/accounts/activate/${accessToken}`);
+        mail.sendConfirmationMail(email, `http://localhost:5500/activate?${accessToken}`);
 
         return res.status(403).json({
             success: false,
@@ -191,7 +191,7 @@ app.post('/signup', async (req, res) => {
     
     //! 15 mins to confirm mail
     const accessToken = token.generateWeb({ username: username }, "15m");
-    mail.sendConfirmationMail(email, `http://localhost:4000/accounts/activate/${accessToken}`);
+    mail.sendConfirmationMail(email, `http://localhost:5500/activate?${accessToken}`);
 
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -220,7 +220,7 @@ app.post('/signup', async (req, res) => {
         console.error('Error creating account:', error);
         return res.status(500).json({
             success: false,
-            error: 'Failed to create account.',
+            error,
         });
     }
 });
@@ -241,12 +241,18 @@ app.get('/accounts/activate/:activationToken', async (req, res) => {
             data: { refreshToken },
         });
 
-        return res.status(200).json({
-            success: true,
-            payload: {
-                account: token.generateWeb({ username: user.username }, process.env.ACCESS_TOKEN_EXPIRES_IN)
-            },
-        });
+        res.cookie(
+            process.env.COOKIE_REFRESH_TOKEN_KEY || "", 
+            refreshToken, 
+            { path: '/activate' }
+        );
+
+        res.cookie(
+            process.env.COOKIE_ACCESS_TOKEN_KEY || "", 
+            token.generateWeb({ username: user.username }, process.env.ACCESS_TOKEN_EXPIRES_IN)
+        );
+
+        return res.status(200);
 
     } catch (error) {
         console.error('Error verifying activation token:', error);

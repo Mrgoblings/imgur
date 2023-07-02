@@ -1,68 +1,79 @@
-<!DOCTYPE html>
-<html lang="en">
+    <!DOCTYPE html>
+    <html lang="en">
 
-<head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Imgur - SignUp</title>
-    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+        <title>Imgur - SignUp</title>
 
-    <meta name="author" content="Valentain" />
+        <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+        <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+        <link rel="manifest" href="/site.webmanifest">
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/accounts.css">
+        <meta name="author" content="Valentain" />
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/accounts.css">
 
 
-</head>
+    </head>
 
-<body>
+    <body>
 
 
-    <div id="preloader">
-        <img src="images/preloader.gif" />
-    </div>
-
-    <div id="backHome"><img src="images/upvote.svg" class="upvote" /><a class="backHomeText" href="/"> back to Home</a></div>
-
-    <div class="login-box">
-        <a href="/">
-            <div class="logo">
-                <a href="/" class="navbar-brand">TUES</a>
-            </div>
-        </a>
-
-        <div class="title">
-            <h1 class="titleText">Register to fake imgur account</h1>
+        <div id="preloader">
+            <img src="images/preloader.gif" />
         </div>
 
-        <form action="register.php" method="post">
-            <div class="user-details">
-                <div class="input-box">
-                    <input class="input" name="email" type="email" maxlength="255" placeholder="Enter email." required>
+        <div id="backHome"><img src="images/upvote.svg" class="upvote" /><a class="backHomeText" href="/"> back to Home</a></div>
+
+        <div class="login-box">
+            <a href="/">
+                <div class="logo">
+                    <a href="/" class="navbar-brand">TUES</a>
                 </div>
-                <div class="input-box">
-                    <input class="input" name="password" type="password" placeholder="Enter password" required>
+            </a>
+
+            <div class="title">
+                <h1 class="titleText">Register to fake imgur account</h1>
+            </div>
+
+            <form action="register.php" method="post">
+                <div class="user-details">
+                    <div class="input-box">
+                        <input class="input" name="displayname" type="text" placeholder="Display Name" required>
+                    </div>
+                    <div class="input-box">
+                        <input class="input" name="username" type="text" placeholder="Username (@unique)" required>
+                    </div>
+                    <div class="input-box">
+                        <input class="input" name="email" type="email" maxlength="255" placeholder="Enter email." pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" required>
+                    </div>
+                    <div class="input-box">
+                        <br>
+                        <input class="input" name="password" type="password" placeholder="Enter password" required>
+                    </div>
+                    <div class="input-box">
+                        <input class="input" name="password2" type="password" placeholder="Confirm password" required>
+                    </div>
                 </div>
-                <div class="input-box">
-                    <input class="input" name="password2" type="password" placeholder="Confirm password" required>
+                <div class="err">
+                    <a id="error-display" style="color: red;"></a>
                 </div>
-            </div>
-            <div class="err">
-                <a>TEST</a>
-                <!--TODO-->
-            </div>
-            <div class="signup-container">
-                <div class="signin"><a href="/login.html">Log In</a></div>
-                <button class="signup-submit" name="submit" tabindex="8" type="submit" id="submit">Sign Up</button>
+                <div class="signup-container">
+                    <div class="signin"><a href="./login.html">Log In</a></div>
+                    <button class="signup-submit" name="submit" tabindex="8" type="submit" id="submit">Sign Up</button>
+                </div>
+            </form>
+        </div>
 
-            </div>
-        </form>
-    </div>
+        <script src="js/basicFunc.js"></script>
+        <script src="js/signup_requests.js"></script>
 
-    <script src="js/basicFunc.js"></script>
+    </body>
 
-</body>
-
-</html>
+    </html>
