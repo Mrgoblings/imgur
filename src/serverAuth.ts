@@ -59,7 +59,7 @@ app.post('/login', async (req, res) => {
     if (!account.refreshToken) {
         //! 15 mins to confirm mail
         const accessToken = token.generateWeb({ username: username }, "15m");
-        mail.sendConfirmationMail(email, `http://localhost:5500/activate?${accessToken}`);
+        mail.sendConfirmationMail(email, `http://localhost:5500/activate/index.html?${accessToken}`);
 
         return res.status(403).json({
             success: false,
@@ -189,14 +189,36 @@ app.post('/resetPassword', token.authenticate, async (req, res) => {
 app.post('/signup', async (req, res) => {
     const { email, username, displayName, password } = req.body;
     
-    //! 15 mins to confirm mail
-    const accessToken = token.generateWeb({ username: username }, "15m");
-    mail.sendConfirmationMail(email, `http://localhost:5500/activate?${accessToken}`);
-
     try {
+        // Perform parameter validation
+        if (!email || !username || !displayName || !password) {
+            return res.status(400).json({
+                success: false,
+                error: 'Missing required parameters.',
+            });
+        }
+        
+        // Check if email or username already exists
+        const existingAccount = await prisma.account.findFirst({
+            where: {
+                OR: [
+                    { email },
+                    { username },
+                ],
+            },
+        });
+
+        if (existingAccount) {
+            return res.status(409).json({
+                success: false,
+                error: 'Email or username already exists.',
+            });
+        }
+
+        // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
         
-        
+        // Create the account
         const account = await prisma.account.create({
             data: {
                 email,
@@ -205,7 +227,12 @@ app.post('/signup', async (req, res) => {
                 password: hashedPassword,
             }
         });
-        
+
+        //! 15 mins to confirm mail
+        const accessToken = token.generateWeb({ username: username }, "15m");
+        mail.sendConfirmationMail(email, `http://localhost:5500/activate/index.html?${accessToken}`);
+
+        // Record IP address
         const ipAddress = (req.header('x-forwarded-for') || req.socket.remoteAddress || "");
         await prisma.ipSeen.create({
             data: {
@@ -214,16 +241,19 @@ app.post('/signup', async (req, res) => {
             }
         });
 
-        return res.sendStatus(200);
+        return res.status(200).json({
+            success: true
+        });
 
     } catch(error) {
         console.error('Error creating account:', error);
         return res.status(500).json({
             success: false,
-            error,
+            error: 'Failed to create account.',
         });
     }
 });
+
 
 
 

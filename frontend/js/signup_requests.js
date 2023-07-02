@@ -33,15 +33,17 @@ document.getElementById("submit").addEventListener("click", function(event) {
             },
             body: JSON.stringify(user),
         })
-        .then(response => {
-            if (response.ok) {
+        .then(response => response.json()) //* Parse the response body as JSON
+        .then(data => {
+            console.log(data);
+            if (data.success) {
                 //* Account created successfully
                 console.log("Account created successfully.");
                 window.location.href = "/activate/";
             } else {
                 //* Handle error response
                 console.error("Failed to create account.");
-                errorContainer.innerHTML = response.error;
+                errorContainer.innerHTML = data.error; // Display the error message from the API
             }
         })
         .catch(error => {
@@ -49,4 +51,5 @@ document.getElementById("submit").addEventListener("click", function(event) {
             console.error("Error creating account:", error);
             errorContainer.innerHTML = error.message;
         });
+
 });

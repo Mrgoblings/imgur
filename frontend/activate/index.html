@@ -16,31 +16,40 @@
     <meta name="author" content="MrGoblings" />
     <meta name="description" content="G2-0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/activate/style.css">
 </head>
 
 <body>
     <div class="container">
         <div class="content">
-            <h1>Check Mail for Account Activation!</h1>
-            <p>An email has been sent to your registered email address with instructions to activate your account.</p>
+            <h1 id="title">Check Mail for Account Activation!</h1>
+            <p id="body">An email has been sent to your registered email address with instructions to activate your account.</p>
         </div>
     </div>
 </body>
 
 
 <script>
-    if (window.location.search !== "?") {
+    if (window.location.search.length > 1) {
         fetch(`https://localhost:4000/accounts/activate/${window.location.search.substring(1)}`)
             .then(response => response.json())
             .then(data => {
                 console.log(data);
-                // Process the response data here
+                document.getElementById("title").innerHTML = "All great! You can close this tab now :0"
+                document.getElementById("body").innerHTML = "or go back form HERE"
+                document.getElementById("body").addEventListener('click', function(event) {
+                    event.preventDefault();
+                    window.location.href = "/";
+                });
             })
             .catch(error => {
                 console.error('Error:', error);
-                // Handle the error here
+                document.getElementById("title").innerHTML = "Error activating your account"
+                document.getElementById("body").innerHTML = "Try again later!"
             });
+    } else {
+        document.getElementById("title").innerHTML = "Check Mail for Account Activation!"
+        document.getElementById("body").innerHTML = "An email has been sent to your registered email address with instructions to activate your account."
     }
 </script>
 
