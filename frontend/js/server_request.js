@@ -1,18 +1,11 @@
-import  {ImageContainer} from './container_template.js';
+import {
+    ImageContainer
+} from './container_template.js';
 
 
-fetch(`http://localhost:3000/posts${window.location.search}`, {
-    // method: "GET",
-    // headers: {
-    //     'Content-Type': 'application/json',
-    // },
-    // // body: {
-    // //     query: document.getElementsByClassName("search")[0].value, //TODO
-    // // },
-})
-
+fetch(`http://localhost:3000/posts${window.location.search}`)
     .then(response => {
-        if (response.ok) { 
+        if (response.ok) {
             return response.json(); //* Parse the response body as JSON
         } else {
             throw new Error("Failed to fetch posts.");

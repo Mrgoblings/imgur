@@ -2,62 +2,67 @@
 <html lang="en">
 
 <head>
-		<meta charset="UTF-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-		<title>Imgur - SignUp</title>
-		<link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+    <title>Imgur - SignUp</title>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
 
-		<meta name="author" content="Valentain" />
-		
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-		<link rel="stylesheet" href="css/accounts.css">
-		
-		
+    <meta name="author" content="Valentain" />
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/accounts.css">
+
+
 </head>
+
 <body>
 
 
-<div id="preloader">
-	<img src="images/preloader.gif"/>
-</div>	
+    <div id="preloader">
+        <img src="images/preloader.gif" />
+    </div>
 
-<div id="backHome"><img src="images/upvote.svg" class="upvote"/><a class="backHomeText" href="/"> back to Home</a></div>
+    <div id="backHome"><img src="images/upvote.svg" class="upvote" /><a class="backHomeText" href="/"> back to Home</a></div>
 
-<div class="login-box">
-	<a href="/">
-		<div class="logo">
-			<a href="/" class="navbar-brand">TUES</a>
-		</div>
-	</a>
+    <div class="login-box">
+        <a href="/">
+            <div class="logo">
+                <a href="/" class="navbar-brand">TUES</a>
+            </div>
+        </a>
 
-	<div class="title"><h1 class="titleText">Register to fake imgur account</h1></div>
-	
-	<form action="register.php" method="post">
-		<div class="user-details">
-			<div class="input-box">
-				<input class="input" name="email" type="email" maxlength="255" placeholder="Enter email." required>
-			</div>
-			<div class="input-box">
-				<input class="input" name="password" type="password" placeholder="Enter password" required>
-			</div>
-            <div class="input-box">
-				<input class="input" name="password2" type="password2" placeholder="Confirm password" required>
-			</div>
-		</div>
-		<div class="err">
-			<a><?php print($error); ?></a>  <!--TODO-->
-		</div>
-		<div class="signup-container">
-            <div class="signin"><a href="/login.html">Log In</a></div>
-            <button class="signup-submit" name="submit" tabindex="8" type="submit" id="submit">Sign Up</button>
-
+        <div class="title">
+            <h1 class="titleText">Register to fake imgur account</h1>
         </div>
-	</form>
-</div>
 
-<script src="js/script.js"></script> 
+        <form action="register.php" method="post">
+            <div class="user-details">
+                <div class="input-box">
+                    <input class="input" name="email" type="email" maxlength="255" placeholder="Enter email." required>
+                </div>
+                <div class="input-box">
+                    <input class="input" name="password" type="password" placeholder="Enter password" required>
+                </div>
+                <div class="input-box">
+                    <input class="input" name="password2" type="password" placeholder="Confirm password" required>
+                </div>
+            </div>
+            <div class="err">
+                <a>TEST</a>
+                <!--TODO-->
+            </div>
+            <div class="signup-container">
+                <div class="signin"><a href="/login.html">Log In</a></div>
+                <button class="signup-submit" name="submit" tabindex="8" type="submit" id="submit">Sign Up</button>
+
+            </div>
+        </form>
+    </div>
+
+    <script src="js/basicFunc.js"></script>
 
 </body>
+
 </html>

@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 import { PrismaClient, States } from '@prisma/client';
+import { error } from 'console';
 import express from "express"
 
 const prisma = new PrismaClient();
@@ -21,7 +22,7 @@ const path = require("path");
 const multer = require("multer"); 
 const storage = multer.diskStorage({
     destination: (res:any, file:any, cb:any) => {
-        cb(null,__dirname +  "/../uploads");
+        cb(null, __dirname +  "/../uploads");
     },
     filename: (req:any, file:any, cb:any) => {
         console.log(file);
@@ -54,7 +55,7 @@ app.get('/posts', async (req, res) => {
                     },
                     {
                         tags: {
-                            has: query,
+                            hasSome: query,
                         },
                     },
                 ],
@@ -90,7 +91,7 @@ app.get(`/posts/:id`, async (req, res) => {
 
         if(!post) return res.sendStatus(404);
 
-        if(post.state !== States.PUBLIC && post.state !== States.DELETED) {
+        if(post.state == States.PRIVATE) {
 
             token.authenticate(req, res, async () => {
                 if(req.body.user.id == post.senderId) {
@@ -121,16 +122,17 @@ app.get(`/posts/:id`, async (req, res) => {
 
 
 //* 4. Create a new post 
-app.post(`/posts`, upload.single("file")/*, token.authenticate*/, async (req, res) => {
-    const { title, imageUrl, user, state, tags} = req.body
-
+app.post(`/posts`/*, token.authenticate*/, upload.single("file"), async (req, res) => {
+    console.log("A POST :0");
+    const { title, imageUrl, user, state, tags} = req.body;
+    console.log("tags :" + tags);
   try {
     const post = await prisma.post.create({
       data: {
         title,
         imageUrl,
         state,
-        tags,
+        tags: tags.split(","),
         sender: {
             connect: {
                 // id: user.id,
@@ -140,6 +142,9 @@ app.post(`/posts`, upload.single("file")/*, token.authenticate*/, async (req, re
       },
     });
 
+    if(!post) throw error("stup");
+
+    console.log("all good");
     return res.status(200).json({
       success: true,
       post: post,
