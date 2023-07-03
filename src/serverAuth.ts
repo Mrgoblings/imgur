@@ -59,7 +59,7 @@ app.post('/login', async (req, res) => {
     if (!account.refreshToken) {
         //! 15 mins to confirm mail
         const accessToken = token.generateWeb({ username: username }, "15m");
-        mail.sendConfirmationMail(email, `http://localhost:5500/activate/index.html?${accessToken}`);
+        mail.sendConfirmationMail(email, `${process.env.CLIENT_URL}/activate/index.html?${accessToken}`);
 
         return res.status(403).json({
             success: false,
@@ -230,7 +230,7 @@ app.post('/signup', async (req, res) => {
 
         //! 15 mins to confirm mail
         const accessToken = token.generateWeb({ username: username }, "15m");
-        mail.sendConfirmationMail(email, `http://localhost:5500/activate/index.html?${accessToken}`);
+        mail.sendConfirmationMail(email, `${process.env.CLIENT_URL}/activate/index.html?${accessToken}`);
 
         // Record IP address
         const ipAddress = (req.header('x-forwarded-for') || req.socket.remoteAddress || "");
@@ -272,16 +272,16 @@ app.get('/accounts/activate/:activationToken', async (req, res) => {
         });
 
         res.cookie(
-            process.env.COOKIE_REFRESH_TOKEN_KEY || "", 
+            process.env.COOKIE_REFRESH_TOKEN_KEY || "refresh_jwt", 
             refreshToken, 
             { path: '/activate' }
         );
 
         res.cookie(
-            process.env.COOKIE_ACCESS_TOKEN_KEY || "", 
+            process.env.COOKIE_ACCESS_TOKEN_KEY || "access_jwt", 
             token.generateWeb({ username: user.username }, process.env.ACCESS_TOKEN_EXPIRES_IN)
         );
-
+        
         return res.status(200);
 
     } catch (error) {

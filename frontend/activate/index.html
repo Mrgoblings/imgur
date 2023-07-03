@@ -7,10 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Account Activation</title>
 
-    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
-    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="../images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
     <link rel="manifest" href="/site.webmanifest">
 
     <meta name="author" content="MrGoblings" />
@@ -31,13 +31,13 @@
 
 <script>
     if (window.location.search.length > 1) {
-        fetch(`https://localhost:4000/accounts/activate/${window.location.search.substring(1)}`)
+        fetch(`http://localhost:4000/accounts/activate/${window.location.search.substring(1)}`)
             .then(response => response.json())
             .then(data => {
                 console.log(data);
                 document.getElementById("title").innerHTML = "All great! You can close this tab now :0"
                 document.getElementById("body").innerHTML = "or go back form HERE"
-                document.getElementById("body").addEventListener('click', function(event) {
+                document.getElementById("body").addEventListener('click', (event) => {
                     event.preventDefault();
                     window.location.href = "/";
                 });
